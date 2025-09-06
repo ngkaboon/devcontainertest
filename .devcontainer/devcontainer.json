@@ -1,7 +1,19 @@
 {
   "name": "Hello World Dev Container",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  
+
+  // Mount the host's SSH authentication socket into the container
+  "mounts": [
+    "source=${env:SSH_AUTH_SOCK},target=/ssh-agent,type=bind,consistency=cached"
+  ],
+
+  // Set the SSH_AUTH_SOCK environment variable inside the container
+  "remoteEnv": {
+    "SSH_AUTH_SOCK": "/ssh-agent"
+  },
+
+  "runArgs": ["--user", "501:20"],
+
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
       "version": "18",
@@ -9,7 +21,7 @@
     },
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -24,7 +36,7 @@
       }
     }
   },
-  
+
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {
@@ -32,9 +44,9 @@
       "onAutoForward": "notify"
     }
   },
-  
+
   "postCreateCommand": "npm install && echo '🎉 Dev container ready! Run: npm run dev'",
   "postStartCommand": "echo '🚀 Container started! Your app will be at http://localhost:3000'",
-  
+
   "remoteUser": "vscode"
 }
