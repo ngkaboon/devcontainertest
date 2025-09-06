@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Container Hello World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .container h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .container p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+            transition: transform 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .response {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .response.show {
+            display: block;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            background: #28a745;
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Dev Container Demo</h1>
+        <p>This app is running inside a VS Code dev container! Click the buttons below to test the API endpoints.</p>
+        
+        <div class="status">🟢 Container Active</div>
+        
+        <div>
+            <button class="button" onclick="fetchHello()">Say Hello</button>
+            <button class="button" onclick="fetchHealth()">Health Check</button>
+        </div>
+        
+        <div id="response" class="response">
+            <h3>API Response:</h3>
+            <pre id="responseData"></pre>
+        </div>
+    </div>
+
+    <script>
+        async function fetchHello() {
+            try {
+                const response = await fetch('/api/hello');
+                const data = await response.json();
+                showResponse(data);
+            } catch (error) {
+                showResponse({ error: 'Failed to fetch: ' + error.message });
+            }
+        }
+        
+        async function fetchHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                showResponse(data);
+            } catch (error) {
+                showResponse({ error: 'Failed to fetch: ' + error.message });
+            }
+        }
+        
+        function showResponse(data) {
+            const responseDiv = document.getElementById('response');
+            const responseData = document.getElementById('responseData');
+            
+            responseData.textContent = JSON.stringify(data, null, 2);
+            responseDiv.classList.add('show');
+        }
+    </script>
+</body>
+</html>
