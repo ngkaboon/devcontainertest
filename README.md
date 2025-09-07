@@ -131,11 +131,40 @@ The session is named "devcontainer" and automatically attaches when ready.
 - **Auto port forwarding** so localhost:3000 works
 - **Automatic npm install** when container starts
 
+## Deployment to Google Cloud Run
+
+This project includes deployment configuration for Google Cloud Run:
+
+### Prerequisites
+- Google Cloud account with billing enabled
+- [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) installed and authenticated
+
+### Deploy
+```bash
+# Deploy to your Google Cloud project
+./deploy.sh your-project-id
+
+# Or use default project in your gcloud config
+./deploy.sh
+```
+
+The deployment script will:
+1. Build a Docker image from the included Dockerfile
+2. Deploy to Cloud Run with auto-scaling (0-10 instances)
+3. Enable public access (unauthenticated requests)
+4. Configure 512Mi memory and 1 CPU
+
+### Deployment Files
+- **Dockerfile**: Multi-stage build for production deployment
+- **deploy.sh**: Automated deployment script for Cloud Run
+- **.dockerignore**: Excludes unnecessary files from Docker build
+
 ## Next Steps
 
 - Try different base images (Python, Go, etc.)
 - Add a database with Docker Compose
 - Configure custom Dockerfile for specific needs
 - Set up pre-commit hooks and linting
+- Set up CI/CD pipeline for automated deployments
 
 Happy containerized coding! 🚀
