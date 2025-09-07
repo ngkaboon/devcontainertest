@@ -1,6 +1,6 @@
 # Dev Container Hello World Demo 🐳
 
-A simple Node.js/Express app that demonstrates how to use VS Code dev containers with OrbStack on Mac.
+A simple Node.js/Express app that demonstrates containerized development environments. Supports both VS Code dev containers and standalone nvim/tmux workflows.
 
 ## What This Demonstrates
 
@@ -12,7 +12,7 @@ A simple Node.js/Express app that demonstrates how to use VS Code dev containers
 ## Quick Start
 
 ### 1. Prerequisites
-- Install [OrbStack](https://orbstack.dev) (or Docker Desktop)
+- Install [OrbStack](https://orbstack.dev), [Colima](https://github.com/abiosoft/colima), or Docker Desktop
 - Install [VS Code](https://code.visualstudio.com/)
 - Install the **Dev Containers** extension in VS Code
 
@@ -47,11 +47,60 @@ npm run dev
 - Click the buttons to test the API endpoints
 - Make changes to `server.js` and see them auto-reload!
 
+## Alternative Setup: nvim + tmux
+
+If you prefer using nvim and tmux instead of VS Code, you can use the provided shell script:
+
+### Prerequisites
+- Install [OrbStack](https://orbstack.dev), [Colima](https://github.com/abiosoft/colima), or Docker Desktop
+- Your favorite terminal and shell setup
+
+### Run the Container
+```bash
+# Make the script executable and run it
+chmod +x dev-container.sh
+./dev-container.sh
+```
+
+This will:
+1. Start a Docker container with Node.js 18
+2. Mount your project files to `/workspace`
+3. Forward port 3000 to localhost
+4. Drop you into a bash shell inside the container
+
+### Inside the Container
+```bash
+# Run the server 
+npm run dev
+
+# Use your preferred editor (vim, nvim, etc.)
+# The container includes git and standard development tools
+```
+
+Your app will be available at `http://localhost:3000` just like the VS Code setup!
+
+### Automated tmux Setup
+
+For a complete development environment with nvim, container, and Claude Code, use the automated setup:
+
+```bash
+# Make the setup script executable and run it
+chmod +x dev-setup.sh
+./dev-setup.sh
+```
+
+This creates a tmux session with:
+- **Left pane**: nvim for editing your code
+- **Top right**: Docker container shell (runs `./dev-container.sh`)
+- **Bottom right**: Claude Code for AI assistance
+
+The session is named "devcontainer" and automatically attaches when ready.
+
 ## What's Happening?
 
 **Outside the Container** (your Mac):
 - Your files are in a regular folder
-- OrbStack provides Docker compatibility
+- OrbStack/Colima/Docker provides container runtime
 - VS Code connects to the container remotely
 
 **Inside the Container** (Ubuntu Linux):

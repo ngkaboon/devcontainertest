@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Serve static files (for our HTML page)
 app.use(express.static("public"));
@@ -8,7 +8,7 @@ app.use(express.static("public"));
 // API endpoint
 app.get("/api/hello", (req, res) => {
   res.json({
-    message: "Hello world thrice from your Dev Container!",
+    message: "Hello world nvim from your Dev Container!",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
   });

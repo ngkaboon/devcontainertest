@@ -16,7 +16,7 @@ tmux send-keys 'nvim .' Enter
 
 # Right pane: Split horizontally (container shell on top, claude on bottom)
 tmux select-pane -t 1
-tmux split-window -v
+tmux split-window -v -p 70
 tmux send-keys -t 1 './dev-container.sh' Enter
 
 # Bottom right: Run Claude

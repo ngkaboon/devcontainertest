@@ -8,6 +8,8 @@ docker run -it --rm \
   mcr.microsoft.com/devcontainers/base:ubuntu bash -c "
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
+    chown -R vscode:vscode /workspace && \
     npm install && \
-    exec bash
+    su -c 'cd /workspace && bash' vscode
+  "
   "
