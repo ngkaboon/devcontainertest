@@ -16,17 +16,10 @@ A simple Node.js/Express app that demonstrates containerized development environ
 - Install [VS Code](https://code.visualstudio.com/)
 - Install the **Dev Containers** extension in VS Code
 
-### 2. Setup Project
-Create a new folder and add these files:
-```
-my-devcontainer-app/
-├── .devcontainer/
-│   └── devcontainer.json
-├── public/
-│   └── index.html
-├── package.json
-├── server.js
-└── README.md
+### 2. Clone the Project
+```bash
+git clone https://github.com/ngkaboon/devcontainertest.git
+cd devcontainertest
 ```
 
 ### 3. Open in Dev Container
