@@ -3,6 +3,12 @@ name: Deploy to AWS App Runner
 on:
   push:
     branches: [main]
+    paths:
+      - 'server.js'
+      - 'package*.json'
+      - 'Dockerfile'
+      - 'public/**'
+      - '.github/workflows/deploy-aws.yml'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
