@@ -5,7 +5,7 @@
 
 REGION=${1:-us-east-1}
 SERVICE_NAME="hello-devcontainer-aws"
-IMAGE_NAME="ghcr.io/ngkaboon/devcontainertest:latest"
+IMAGE_NAME="public.ecr.aws/z6l6u0w0/hello-devcontainer-aws:latest"
 
 echo "🚀 Deploying to AWS App Runner..."
 echo "Region: $REGION"
@@ -16,7 +16,8 @@ echo "Image: $IMAGE_NAME"
 echo "📦 Building Docker image..."
 docker build -t $IMAGE_NAME .
 
-echo "📤 Pushing to GitHub Container Registry..."
+echo "📤 Pushing to ECR Public..."
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
 docker push $IMAGE_NAME
 
 # Check if service exists
