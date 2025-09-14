@@ -199,11 +199,11 @@ aws iam attach-role-policy \
 ```
 
 #### AWS App Runner Features
-- **Auto-scaling**: Scale to zero when idle (no cost)
-- **Container registry**: Uses GitHub Container Registry (free)
+- **Auto-scaling**: Scales down to 1 provisioned instance when idle (minimal cost)
+- **Container registry**: Uses ECR Public (free)
 - **Custom domains**: Built-in HTTPS and custom domain support
 - **Health checks**: Uses your `/api/health` endpoint
-- **Cost**: ~$0-10/month for demo usage
+- **Cost**: ~$2.50-5/month for demo usage (0.25 vCPU, 0.5 GB configuration)
 
 ### Google Cloud Run
 
