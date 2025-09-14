@@ -5,7 +5,7 @@ A simple Node.js/Express app that demonstrates containerized development environ
 ## What This Demonstrates
 
 - **Consistent Environment**: Everyone gets the same Node.js version and dependencies
-- **Port Forwarding**: Access your containerized app at `http://localhost:3000`
+- **Port Forwarding**: Access your containerized app at `http://localhost:8080` (AWS) or `http://localhost:3000` (local dev)
 - **Hot Reload**: Changes to your code automatically restart the server
 - **VS Code Integration**: Full IntelliSense, debugging, and extensions inside the container
 
@@ -124,9 +124,90 @@ The session is named "devcontainer" and automatically attaches when ready.
 - **Auto port forwarding** so localhost:3000 works
 - **Automatic npm install** when container starts
 
-## Deployment to Google Cloud Run
+## Cloud Deployment Options
 
-This project includes deployment configuration for Google Cloud Run:
+This project supports deployment to multiple cloud platforms:
+
+### AWS App Runner (Recommended)
+
+Deploy to AWS App Runner with GitHub Actions and OIDC authentication:
+
+#### Prerequisites
+- AWS account with App Runner service available
+- [GitHub Container Registry](https://github.com/features/packages) access
+- AWS OIDC Identity Provider configured (see setup below)
+
+#### Automatic Deployment (GitHub Actions)
+1. Push to `main` branch
+2. GitHub Actions automatically builds and deploys
+3. Uses GitHub Container Registry (free for public repos)
+4. No AWS credentials stored in GitHub (uses OIDC)
+
+#### Manual Deployment
+```bash
+# Deploy to AWS App Runner
+./deploy-aws.sh [region]
+
+# Default region is us-east-1
+./deploy-aws.sh
+```
+
+#### AWS Setup (One-time)
+Run these commands with your AWS CLI configured:
+
+```bash
+# Get your AWS Account ID
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# Create OIDC Identity Provider
+aws iam create-open-id-connect-provider \
+    --url https://token.actions.githubusercontent.com \
+    --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1 \
+    --client-id-list sts.amazonaws.com
+
+# Create trust policy for your GitHub repo
+cat > trust-policy.json << EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::${AWS_ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                    "token.actions.githubusercontent.com:sub": "repo:YOUR_USERNAME/YOUR_REPO:ref:refs/heads/main"
+                }
+            }
+        }
+    ]
+}
+EOF
+
+# Create IAM role
+aws iam create-role \
+    --role-name GitHubActionsAppRunnerRole \
+    --assume-role-policy-document file://trust-policy.json
+
+# Attach App Runner permissions
+aws iam attach-role-policy \
+    --role-name GitHubActionsAppRunnerRole \
+    --policy-arn arn:aws:iam::aws:policy/AWSAppRunnerFullAccess
+```
+
+#### AWS App Runner Features
+- **Auto-scaling**: Scale to zero when idle (no cost)
+- **Container registry**: Uses GitHub Container Registry (free)
+- **Custom domains**: Built-in HTTPS and custom domain support
+- **Health checks**: Uses your `/api/health` endpoint
+- **Cost**: ~$0-10/month for demo usage
+
+### Google Cloud Run
+
+This project also includes deployment configuration for Google Cloud Run:
 
 ### Prerequisites
 - Google Cloud account with billing enabled
@@ -148,8 +229,10 @@ The deployment script will:
 4. Configure 512Mi memory and 1 CPU
 
 ### Deployment Files
-- **Dockerfile**: Multi-stage build for production deployment
-- **deploy.sh**: Automated deployment script for Cloud Run
+- **Dockerfile**: Multi-stage build for production deployment (works for both AWS and GCP)
+- **deploy-aws.sh**: Automated deployment script for AWS App Runner
+- **deploy.sh**: Automated deployment script for Google Cloud Run
+- **.github/workflows/deploy-aws.yml**: GitHub Actions workflow for AWS deployment
 - **.dockerignore**: Excludes unnecessary files from Docker build
 
 ## Next Steps

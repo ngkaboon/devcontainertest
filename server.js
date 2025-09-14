@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
+// Google Cloud Run uses PORT 3000 by default
+// const port = process.env.PORT || 3000;
+// AWS App Runner expects PORT 8080
+const port = process.env.PORT || 8080;
 
 // Serve static files (for our HTML page)
 app.use(express.static("public"));
